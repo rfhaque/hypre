@@ -8,21 +8,21 @@
 #include "_hypre_parcsr_ls.h"
 
 /*--------------------------------------------------------------------------
- * GenerateCoordinates
+ * hypre_GenerateCoordinates
  *--------------------------------------------------------------------------*/
 
-float *
-GenerateCoordinates( MPI_Comm comm,
-                     HYPRE_BigInt      nx,
-                     HYPRE_BigInt      ny,
-                     HYPRE_BigInt      nz,
-                     HYPRE_Int      P,
-                     HYPRE_Int      Q,
-                     HYPRE_Int      R,
-                     HYPRE_Int      p,
-                     HYPRE_Int      q,
-                     HYPRE_Int      r,
-                     HYPRE_Int      coorddim)
+hypre_float *
+hypre_GenerateCoordinates( MPI_Comm       comm,
+                           HYPRE_BigInt   nx,
+                           HYPRE_BigInt   ny,
+                           HYPRE_BigInt   nz,
+                           HYPRE_Int      P,
+                           HYPRE_Int      Q,
+                           HYPRE_Int      R,
+                           HYPRE_Int      p,
+                           HYPRE_Int      q,
+                           HYPRE_Int      r,
+                           HYPRE_Int      coorddim)
 {
    HYPRE_BigInt ix, iy, iz;
    HYPRE_Int cnt;
@@ -34,7 +34,7 @@ GenerateCoordinates( MPI_Comm comm,
    HYPRE_BigInt *ny_part;
    HYPRE_BigInt *nz_part;
 
-   float *coord = NULL;
+   hypre_float *coord = NULL;
 
    if (coorddim < 1 || coorddim > 3)
    {
@@ -51,7 +51,7 @@ GenerateCoordinates( MPI_Comm comm,
 
    local_num_rows = nx_local * ny_local * nz_local;
 
-   coord = hypre_CTAlloc(float,  coorddim * local_num_rows, HYPRE_MEMORY_HOST);
+   coord = hypre_CTAlloc(hypre_float, coorddim * local_num_rows, HYPRE_MEMORY_HOST);
 
    cnt = 0;
    for (iz = nz_part[r]; iz < nz_part[r + 1]; iz++)
@@ -63,9 +63,9 @@ GenerateCoordinates( MPI_Comm comm,
             /* set coordinates BM Oct 17, 2006 */
             if (coord)
             {
-               if (nx > 1) { coord[cnt++] = ix; }
-               if (ny > 1) { coord[cnt++] = iy; }
-               if (nz > 1) { coord[cnt++] = iz; }
+               if (nx > 1) { coord[cnt++] = (hypre_float) ix; }
+               if (ny > 1) { coord[cnt++] = (hypre_float) iy; }
+               if (nz > 1) { coord[cnt++] = (hypre_float) iz; }
             }
          }
       }
