@@ -1236,7 +1236,8 @@ HYPRE_SetGPUMemoryPoolSize(HYPRE_Int bin_growth,
                            HYPRE_Int max_bin,
                            size_t    max_cached_bytes)
 {
-   return hypre_SetCubMemPoolSize(bin_growth, min_bin, max_bin, max_cached_bytes);
+   return hypre_SetCubMemPoolSize((hypre_uint) bin_growth, (hypre_uint) min_bin,
+                                  (hypre_uint) max_bin, max_cached_bytes);
 }
 
 #if defined(HYPRE_USING_DEVICE_POOL)

@@ -133,7 +133,7 @@ static inline HYPRE_Int
 first_lsb_bit_indx( hypre_uint x )
 {
    HYPRE_Int pos;
-#if defined(_MSC_VER) || defined(__MINGW64__)
+#if defined(_MSC_VER)
    if (x == 0)
    {
       pos = 0;
@@ -146,7 +146,7 @@ first_lsb_bit_indx( hypre_uint x )
       }
    }
 #else
-   pos = ffs(x);
+   pos = ffs((hypre_int) x);
 #endif
    return (pos - 1);
 }
@@ -244,7 +244,7 @@ hypre_BigHash(HYPRE_Int input)
    // 1665863975 is added to input so that
    // only -1073741824 gives HYPRE_HOPSCOTCH_HASH_EMPTY.
    // Hence, we're fine as long as key is non-negative.
-   h32 += (input + 1665863975) * HYPRE_XXH_PRIME32_3;
+   h32 += ((hypre_uint) input + 1665863975U) * HYPRE_XXH_PRIME32_3;
    h32 = HYPRE_XXH_rotl32(h32, 17) * HYPRE_XXH_PRIME32_4;
 
    h32 ^= h32 >> 15;
@@ -255,7 +255,7 @@ hypre_BigHash(HYPRE_Int input)
 
    //hypre_assert(HYPRE_HOPSCOTCH_HASH_EMPTY != h32);
 
-   return h32;
+   return (HYPRE_Int) h32;
 }
 #endif
 
@@ -298,7 +298,7 @@ hypre_Hash(HYPRE_Int input)
    // 1665863975 is added to input so that
    // only -1073741824 gives HYPRE_HOPSCOTCH_HASH_EMPTY.
    // Hence, we're fine as long as key is non-negative.
-   h32 += (input + 1665863975) * HYPRE_XXH_PRIME32_3;
+   h32 += ((hypre_uint) input + 1665863975U) * HYPRE_XXH_PRIME32_3;
    h32 = HYPRE_XXH_rotl32(h32, 17) * HYPRE_XXH_PRIME32_4;
 
    h32 ^= h32 >> 15;
@@ -309,7 +309,7 @@ hypre_Hash(HYPRE_Int input)
 
    //hypre_assert(HYPRE_HOPSCOTCH_HASH_EMPTY != h32);
 
-   return h32;
+   return (HYPRE_Int) h32;
 }
 #endif
 
