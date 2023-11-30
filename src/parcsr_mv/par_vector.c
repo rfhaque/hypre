@@ -1041,13 +1041,12 @@ hypre_ParVectorPrintBinaryIJ( hypre_ParVector *par_vector,
    hypre_Vector          *h_vector;
    HYPRE_Int              size;
    HYPRE_Int              num_components;
-   HYPRE_Int              total_size;
    HYPRE_Int              storage_method;
 
    /* Local variables */
    char                   new_filename[HYPRE_MAX_FILE_NAME_LEN];
    FILE                  *fp;
-   size_t                 count;
+   size_t                 count, total_size;
    hypre_uint64           header[8];
    HYPRE_Int              one = 1;
    HYPRE_Complex         *data;
@@ -1074,7 +1073,7 @@ hypre_ParVectorPrintBinaryIJ( hypre_ParVector *par_vector,
    storage_method = hypre_VectorMultiVecStorageMethod(h_vector);
    data = hypre_VectorData(h_vector);
    size = hypre_VectorSize(h_vector);
-   total_size = size * num_components;
+   total_size = ((size_t) num_components) * size;
 
    /* Open binary file */
    hypre_sprintf(new_filename, "%s.%05d.bin", filename, myid);

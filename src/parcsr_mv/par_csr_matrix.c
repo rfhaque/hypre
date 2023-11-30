@@ -850,9 +850,9 @@ hypre_ParCSRMatrixPrintBinaryIJ( hypre_ParCSRMatrix *matrix,
    char                  new_filename[HYPRE_MAX_FILE_NAME_LEN];
    FILE                 *fp;
    hypre_uint64          header[11];
-   size_t                count;
+   size_t                count, k;
    HYPRE_Int             one = 1;
-   HYPRE_Int             myid, i, j, k;
+   HYPRE_Int             myid, i, j;
    HYPRE_BigInt          bigI, bigJ;
    HYPRE_BigInt          ilower, iupper, jlower, jupper;
    HYPRE_Complex         val;
@@ -921,7 +921,7 @@ hypre_ParCSRMatrixPrintBinaryIJ( hypre_ParCSRMatrix *matrix,
    header[3]  = (hypre_uint64) hypre_ParCSRMatrixGlobalNumRows(h_matrix);;
    header[4]  = (hypre_uint64) hypre_ParCSRMatrixGlobalNumCols(h_matrix);;
    header[5]  = (hypre_uint64) hypre_ParCSRMatrixDNumNonzeros(h_matrix);
-   header[6]  = (hypre_uint64) diag_nnz + offd_nnz; /* local number of nonzeros*/
+   header[6]  = (hypre_uint64) (diag_nnz + offd_nnz); /* local number of nonzeros*/
    header[7]  = (hypre_uint64) ilower;
    header[8]  = (hypre_uint64) iupper;
    header[9]  = (hypre_uint64) jlower;
