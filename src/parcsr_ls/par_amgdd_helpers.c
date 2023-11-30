@@ -287,12 +287,16 @@ hypre_BoomerAMGDD_FindNeighborProcessors( hypre_ParCSRMatrix      *A,
          hypre_TFree(starting_dofs[i], HYPRE_MEMORY_HOST);
          starting_dofs[i] = NULL;
          // Update the send flag and request dofs
-         hypre_BoomerAMGDD_AddToSendAndRequestDofs(A, add_flag, add_flag_requests, level, i, compGridCommPkg,
-                                                   distances, send_dof_maps, send_dof_capacities, csr_num_recvs, num_req_dofs, req_dofs, req_dof_dist);
+         hypre_BoomerAMGDD_AddToSendAndRequestDofs(A, add_flag, add_flag_requests, level, i,
+                                                   compGridCommPkg, distances, send_dof_maps,
+                                                   send_dof_capacities, csr_num_recvs,
+                                                   num_req_dofs, req_dofs, req_dof_dist);
          // Reset add flags
-         hypre_Memset(add_flag, 0, sizeof(HYPRE_Int)*hypre_ParCSRMatrixNumRows(A), HYPRE_MEMORY_HOST);
+         hypre_Memset(add_flag, 0, (size_t) hypre_ParCSRMatrixNumRows(A) * sizeof(HYPRE_Int),
+                      HYPRE_MEMORY_HOST);
          hypre_Memset(add_flag_requests, 0,
-                      sizeof(HYPRE_Int)*hypre_CSRMatrixNumCols(hypre_ParCSRMatrixOffd(A)), HYPRE_MEMORY_HOST);
+                      (size_t) hypre_CSRMatrixNumCols(hypre_ParCSRMatrixOffd(A)) * sizeof(HYPRE_Int),
+                      HYPRE_MEMORY_HOST);
       }
    }
    hypre_TFree(add_flag, HYPRE_MEMORY_HOST);
@@ -2171,7 +2175,8 @@ hypre_BoomerAMGDD_PackSendBuffer( hypre_ParAMGDDData *amgdd_data,
          total_num_nodes = hypre_AMGDDCompGridNumOwnedNodes(compGrid[level]) +
                            hypre_AMGDDCompGridNumNonOwnedNodes(compGrid[level]);
 
-         hypre_Memset(add_flag[level], 0, sizeof(HYPRE_Int)*total_num_nodes, memory_location);
+         hypre_Memset(add_flag[level], 0, (size_t) total_num_nodes * sizeof(HYPRE_Int),
+                      memory_location);
          (*send_flag_buffer_size) += num_send_nodes[current_level][proc][level];
          if (level != num_levels - 1)
          {

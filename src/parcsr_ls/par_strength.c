@@ -2330,11 +2330,16 @@ hypre_BoomerAMGCreate2ndSHost( hypre_ParCSRMatrix  *S,
             {
                if (CF_marker_offd[i] > 0)
                {
-                  cnt = hypre_BigLowerBound(col_map_offd_C + cnt, col_map_offd_C + num_cols_offd_C,
-                                            fine_to_coarse_offd[i]) - col_map_offd_C;
+                  cnt = (HYPRE_BigInt) (hypre_BigLowerBound(col_map_offd_C + cnt,
+                                                            col_map_offd_C + num_cols_offd_C,
+                                                            fine_to_coarse_offd[i]) -
+                                        col_map_offd_C);
                   map_S_to_C[i] = cnt++;
                }
-               else { map_S_to_C[i] = -1; }
+               else
+               {
+                  map_S_to_C[i] = -1;
+               }
             }
          } /* omp parallel */
       }
@@ -2348,10 +2353,10 @@ hypre_BoomerAMGCreate2ndSHost( hypre_ParCSRMatrix  *S,
     *  Allocate and initialize some stuff.
     *-----------------------------------------------------------------------*/
 
-   HYPRE_Int *S_marker_array = NULL, *S_marker_offd_array = NULL;
-   if (num_coarse) { S_marker_array = hypre_TAlloc(HYPRE_Int,  num_coarse * hypre_NumThreads(), HYPRE_MEMORY_HOST); }
-   if (num_cols_offd_C) { S_marker_offd_array = hypre_TAlloc(HYPRE_Int,  num_cols_offd_C * hypre_NumThreads(), HYPRE_MEMORY_HOST); }
-
+   HYPRE_Int *S_marker_array      = hypre_TAlloc(HYPRE_Int, num_coarse * hypre_NumThreads(),
+                                                 HYPRE_MEMORY_HOST);
+   HYPRE_Int *S_marker_offd_array = hypre_TAlloc(HYPRE_Int, num_cols_offd_C * hypre_NumThreads(),
+                                                 HYPRE_MEMORY_HOST);
    HYPRE_Int *C_temp_offd_j_array = NULL;
    HYPRE_Int *C_temp_diag_j_array = NULL;
    HYPRE_Int *C_temp_offd_data_array = NULL;
@@ -2359,18 +2364,19 @@ hypre_BoomerAMGCreate2ndSHost( hypre_ParCSRMatrix  *S,
 
    if (num_paths > 1)
    {
-      C_temp_diag_j_array = hypre_TAlloc(HYPRE_Int,  num_coarse * hypre_NumThreads(), HYPRE_MEMORY_HOST);
-      C_temp_offd_j_array = hypre_TAlloc(HYPRE_Int,  num_cols_offd_C * hypre_NumThreads(),
+      C_temp_diag_j_array = hypre_TAlloc(HYPRE_Int, num_coarse * hypre_NumThreads(),
+                                         HYPRE_MEMORY_HOST);
+      C_temp_offd_j_array = hypre_TAlloc(HYPRE_Int, num_cols_offd_C * hypre_NumThreads(),
                                          HYPRE_MEMORY_HOST);
 
-      C_temp_diag_data_array = hypre_TAlloc(HYPRE_Int,  num_coarse * hypre_NumThreads(),
+      C_temp_diag_data_array = hypre_TAlloc(HYPRE_Int, num_coarse * hypre_NumThreads(),
                                             HYPRE_MEMORY_HOST);
-      C_temp_offd_data_array = hypre_TAlloc(HYPRE_Int,  num_cols_offd_C * hypre_NumThreads(),
+      C_temp_offd_data_array = hypre_TAlloc(HYPRE_Int, num_cols_offd_C * hypre_NumThreads(),
                                             HYPRE_MEMORY_HOST);
    }
 
-   C_diag_i = hypre_CTAlloc(HYPRE_Int,  num_coarse + 1, HYPRE_MEMORY_HOST);
-   C_offd_i = hypre_CTAlloc(HYPRE_Int,  num_coarse + 1, HYPRE_MEMORY_HOST);
+   C_diag_i = hypre_CTAlloc(HYPRE_Int, num_coarse + 1, HYPRE_MEMORY_HOST);
+   C_offd_i = hypre_CTAlloc(HYPRE_Int, num_coarse + 1, HYPRE_MEMORY_HOST);
 
    /*-----------------------------------------------------------------------
     *  Loop over rows of S
