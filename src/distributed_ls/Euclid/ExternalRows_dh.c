@@ -361,8 +361,8 @@ void print_received_rows_private(ExternalRows_dh er)
 
   hypre_fprintf(logFile, "\nEXR =============== received rows, printed from hash table =============\n");
   for (i=0; i<n; ++i) {
-    HYPRE_Int len, *cval, *fill;
-    REAL_DH *aval;
+    HYPRE_Int len = 0, *cval = NULL, *fill = NULL;
+    REAL_DH *aval = NULL;
     ExternalRows_dhGetRow(er, i, &len, &cval, &fill, &aval); CHECK_V_ERROR;
     if (len > 0) {
       hypre_fprintf(logFile, "EXR %i :: ", i+1);

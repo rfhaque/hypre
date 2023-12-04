@@ -11,7 +11,7 @@
  * hypre_GenerateCoordinates
  *--------------------------------------------------------------------------*/
 
-hypre_float *
+hypre_float*
 hypre_GenerateCoordinates( MPI_Comm       comm,
                            HYPRE_BigInt   nx,
                            HYPRE_BigInt   ny,
@@ -24,6 +24,8 @@ hypre_GenerateCoordinates( MPI_Comm       comm,
                            HYPRE_Int      r,
                            HYPRE_Int      coorddim)
 {
+   HYPRE_UNUSED_VAR(comm);
+
    HYPRE_BigInt ix, iy, iz;
    HYPRE_Int cnt;
 

@@ -23,10 +23,10 @@ void bicgstab_euclid(Mat_dh A, Euclid_dh ctx, HYPRE_Real *x, HYPRE_Real *b, HYPR
   HYPRE_Real atol = ctx->atol, rtol = ctx->rtol;
 
   /* scalars */
-  HYPRE_Real alpha, alpha_1,
+  HYPRE_Real alpha, alpha_1 = 1.0,
          beta_1,
-         widget, widget_1,
-         rho_1, rho_2,
+         widget, widget_1 = 1.0,
+         rho_1, rho_2 = 1.0,
          s_norm, eps,
          exit_a, b_iprod, r_iprod;
 

@@ -760,6 +760,8 @@ HYPRE_Int ilut_row_private(HYPRE_Int localRow, HYPRE_Int *list, HYPRE_Int *o2n_c
                      HYPRE_Int len, HYPRE_Int *CVAL, HYPRE_Real *AVAL,
                      REAL_DH *work, Euclid_dh ctx, bool debug)
 {
+  HYPRE_UNUSED_VAR(debug);
+
   START_FUNC_DH
   Factor_dh F = ctx->F;
   HYPRE_Int     j, col, m = ctx->m, *rp = F->rp, *cval = F->cval;
