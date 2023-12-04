@@ -85,7 +85,7 @@ void Hash_i_dhCreate(Hash_i_dh *h, HYPRE_Int sizeIN)
 
 
   /* allocate and zero the hash table */
-  tmp2 = tmp->data = (Hash_i_Record*)MALLOC_DH(size*sizeof(Hash_i_Record)); CHECK_V_ERROR;
+  tmp2 = tmp->data = (Hash_i_Record*)MALLOC_DH((size_t) size * sizeof(Hash_i_Record)); CHECK_V_ERROR;
   for (i=0; i<size; ++i) {
     tmp2[i].key = -1;
     tmp2[i].mark = -1;
@@ -231,7 +231,7 @@ void rehash_private(Hash_i_dh h)
   /* allocate new data table, and install it in the Hash_i_dh object;
      essentially, we reinitialize the hash object.
    */
-  newData = (Hash_i_Record*)MALLOC_DH(new_size*sizeof(Hash_i_Record)); CHECK_V_ERROR;
+  newData = (Hash_i_Record*)MALLOC_DH((size_t) new_size * sizeof(Hash_i_Record)); CHECK_V_ERROR;
   for (i=0; i<new_size; ++i) {
     newData[i].key = -1;
     newData[i].mark = -1;
