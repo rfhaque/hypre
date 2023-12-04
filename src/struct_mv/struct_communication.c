@@ -16,8 +16,10 @@ FILE      *file;
 #endif
 
 /* this computes a (large enough) size (in doubles) for the message prefix */
-#define hypre_CommPrefixSize(ne)                                        \
-   ( (((1+ne)*sizeof(HYPRE_Int) + ne*sizeof(hypre_Box))/sizeof(HYPRE_Complex)) + 1 )
+#define hypre_CommPrefixSize(ne)                    \
+   ( (((1 + ne) * ((HYPRE_Int) sizeof(HYPRE_Int)) + \
+       ne * ((HYPRE_Int) sizeof(hypre_Box))) /      \
+      ((HYPRE_Int) sizeof(HYPRE_Complex))) + 1 )
 
 /*--------------------------------------------------------------------------
  * Create a communication package.  A grid-based description of a communication
@@ -950,7 +952,7 @@ hypre_InitializeCommunication( hypre_CommPkg        *comm_pkg,
                   size *= length_array[d];
                }
 
-               hypre_Memset(dptr, 0, size * sizeof(HYPRE_Complex), memory_location);
+               hypre_Memset(dptr, 0, (size_t) size * sizeof(HYPRE_Complex), memory_location);
 
                dptr += size;
             }
@@ -1031,7 +1033,7 @@ hypre_InitializeCommunication( hypre_CommPkg        *comm_pkg,
    {
       comm_type = hypre_CommPkgRecvType(comm_pkg, i);
       hypre_MPI_Irecv(recv_buffers_mpi[i],
-                      hypre_CommTypeBufsize(comm_type)*sizeof(HYPRE_Complex),
+                      (HYPRE_Int) sizeof(HYPRE_Complex) * hypre_CommTypeBufsize(comm_type),
                       hypre_MPI_BYTE, hypre_CommTypeProc(comm_type),
                       tag, comm, &requests[j++]);
       if ( hypre_CommPkgFirstComm(comm_pkg) )
@@ -1046,7 +1048,7 @@ hypre_InitializeCommunication( hypre_CommPkg        *comm_pkg,
    {
       comm_type = hypre_CommPkgSendType(comm_pkg, i);
       hypre_MPI_Isend(send_buffers_mpi[i],
-                      hypre_CommTypeBufsize(comm_type)*sizeof(HYPRE_Complex),
+                      (HYPRE_Int) sizeof(HYPRE_Complex) * hypre_CommTypeBufsize(comm_type),
                       hypre_MPI_BYTE, hypre_CommTypeProc(comm_type),
                       tag, comm, &requests[j++]);
       if ( hypre_CommPkgFirstComm(comm_pkg) )

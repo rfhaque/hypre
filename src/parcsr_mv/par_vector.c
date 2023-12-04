@@ -1073,7 +1073,7 @@ hypre_ParVectorPrintBinaryIJ( hypre_ParVector *par_vector,
    storage_method = hypre_VectorMultiVecStorageMethod(h_vector);
    data = hypre_VectorData(h_vector);
    size = hypre_VectorSize(h_vector);
-   total_size = ((size_t) num_components) * size;
+   total_size = (size_t) (num_components * size);
 
    /* Open binary file */
    hypre_sprintf(new_filename, "%s.%05d.bin", filename, myid);

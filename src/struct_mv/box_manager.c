@@ -1640,7 +1640,7 @@ hypre_BoxManAssemble( hypre_BoxManager *manager )
                   boxman, since this is just generated in addentry. */
 
                non_info_size = 2 * ndim + 2;
-               entry_size_bytes = non_info_size * sizeof(HYPRE_Int)
+               entry_size_bytes = (HYPRE_Int) sizeof(HYPRE_Int) * non_info_size
                                   + hypre_BoxManEntryInfoSize(manager);
 
                /* modification -  use an true max_response_size
@@ -1764,7 +1764,7 @@ hypre_BoxManAssemble( hypre_BoxManager *manager )
             boxman, since this is just generated in addentry. */
 
          non_info_size = 2 * ndim + 2;
-         entry_size_bytes = non_info_size * sizeof(HYPRE_Int)
+         entry_size_bytes = non_info_size * ((HYPRE_Int) sizeof(HYPRE_Int))
                             + hypre_BoxManEntryInfoSize(manager);
 
          /* figure out how many entries each proc has - let the group know */
@@ -2718,7 +2718,7 @@ hypre_FillResponseBoxManAssemble2( void *p_recv_contact_buf,
    /*initialize stuff */
    hypre_MPI_Comm_rank(comm, &myid );
 
-   entry_size_bytes = 8 * sizeof(HYPRE_Int) + hypre_BoxManEntryInfoSize(manager);
+   entry_size_bytes = 8 * ((HYPRE_Int) sizeof(HYPRE_Int)) + hypre_BoxManEntryInfoSize(manager);
 
    /* num_my_entries is the amount of information to send */
 

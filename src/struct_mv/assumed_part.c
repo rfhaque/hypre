@@ -1373,7 +1373,7 @@ hypre_StructAssumedPartitionCreate(
 
    hypre_DataExchangeList(proc_count, proc_array,
                           contact_boxinfo, proc_array_starts,
-                          (1 + 2 * ndim)*sizeof(HYPRE_Int),
+                          (size_t) (1 + 2 * ndim) * sizeof(HYPRE_Int),
                           sizeof(HYPRE_Int), &response_obj, max_response_size, 1,
                           comm, (void**) &response_buf, &response_buf_starts);
 
