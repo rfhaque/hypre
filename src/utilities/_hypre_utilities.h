@@ -2647,8 +2647,8 @@ static inline HYPRE_BigInt
 hypre_BigHash( HYPRE_BigInt input )
 {
    hypre_ulonglongint h64 = HYPRE_XXH_PRIME64_5 + sizeof(input);
+   hypre_ulonglongint k1  = (hypre_ulonglongint) input;
 
-   hypre_ulonglongint k1 = input;
    k1 *= HYPRE_XXH_PRIME64_2;
    k1 = HYPRE_XXH_rotl64(k1, 31);
    k1 *= HYPRE_XXH_PRIME64_1;
@@ -2669,7 +2669,7 @@ hypre_BigHash( HYPRE_BigInt input )
    }
 #endif
 
-   return h64;
+   return (HYPRE_BigInt) h64;
 }
 
 #else
