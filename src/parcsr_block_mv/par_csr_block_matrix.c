@@ -931,7 +931,7 @@ hypre_ParVectorCreateFromBlock(MPI_Comm      comm,
                                HYPRE_Int     block_size)
 {
    hypre_ParVector  *vector;
-   HYPRE_Int         size;
+   HYPRE_Int         my_id, num_procs;
    HYPRE_BigInt      global_size;
    HYPRE_BigInt      new_partitioning[2];
 
@@ -939,6 +939,9 @@ hypre_ParVectorCreateFromBlock(MPI_Comm      comm,
 
    if (!p_partitioning)
    {
+      hypre_MPI_Comm_rank(comm, &my_id);
+      hypre_MPI_Comm_size(comm, &num_procs);
+
       hypre_GenerateLocalPartitioning(global_size, num_procs, my_id, new_partitioning);
    }
    else /* adjust for block_size */
@@ -946,7 +949,6 @@ hypre_ParVectorCreateFromBlock(MPI_Comm      comm,
       new_partitioning[0] = p_partitioning[0] * (HYPRE_BigInt) block_size;
       new_partitioning[1] = p_partitioning[1] * (HYPRE_BigInt) block_size;
    }
-   size = (HYPRE_Int) (new_partitioning[1] - new_partitioning[0]);
 
    vector = hypre_ParVectorCreate(comm, global_size, new_partitioning);
 
