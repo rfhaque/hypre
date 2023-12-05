@@ -81,9 +81,9 @@ hypre_ParCSRMatrixCreate( MPI_Comm      comm,
    /* row_starts[0] is start of local rows.
       row_starts[1] is start of next processor's rows */
    first_row_index = row_starts[0];
-   local_num_rows  = row_starts[1] - first_row_index;
+   local_num_rows  = (HYPRE_Int) (row_starts[1] - first_row_index);
    first_col_diag  = col_starts[0];
-   local_num_cols  = col_starts[1] - first_col_diag;
+   local_num_cols  = (HYPRE_Int) (col_starts[1] - first_col_diag);
 
    hypre_ParCSRMatrixComm(matrix) = comm;
    hypre_ParCSRMatrixDiag(matrix) =
@@ -1382,14 +1382,12 @@ hypre_ParCSRMatrixGetRowHost( hypre_ParCSRMatrix  *mat,
       allocate buffer */
    if (!hypre_ParCSRMatrixRowvalues(mat) && ( col_ind || values ))
    {
-      /*
-        allocate enough space to hold information from the longest row.
-      */
+      /* allocate enough space to hold information from the longest row. */
       HYPRE_Int max = 1, tmp;
       HYPRE_Int i;
-      HYPRE_Int m = row_end - row_start;
+      HYPRE_Int m = (HYPRE_Int) (row_end - row_start);
 
-      for ( i = 0; i < m; i++ )
+      for (i = 0; i < m; i++)
       {
          tmp = hypre_CSRMatrixI(Aa)[i + 1] - hypre_CSRMatrixI(Aa)[i] +
                hypre_CSRMatrixI(Ba)[i + 1] - hypre_CSRMatrixI(Ba)[i];
@@ -1399,10 +1397,10 @@ hypre_ParCSRMatrixGetRowHost( hypre_ParCSRMatrix  *mat,
          }
       }
 
-      hypre_ParCSRMatrixRowvalues(mat)  =
-         (HYPRE_Complex *) hypre_CTAlloc(HYPRE_Complex, max, hypre_ParCSRMatrixMemoryLocation(mat));
-      hypre_ParCSRMatrixRowindices(mat) =
-         (HYPRE_BigInt *)  hypre_CTAlloc(HYPRE_BigInt,  max, hypre_ParCSRMatrixMemoryLocation(mat));
+      hypre_ParCSRMatrixRowvalues(mat)  = hypre_CTAlloc(HYPRE_Complex, max,
+                                                        hypre_ParCSRMatrixMemoryLocation(mat));
+      hypre_ParCSRMatrixRowindices(mat) = hypre_CTAlloc(HYPRE_BigInt, max,
+                                                        hypre_ParCSRMatrixMemoryLocation(mat));
    }
 
    /* Copy from dual sequential matrices into buffer */

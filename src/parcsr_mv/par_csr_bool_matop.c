@@ -732,13 +732,9 @@ hypre_ParBooleanAAt(hypre_ParCSRBooleanMatrix  *A)
     *  Allocate C_offd_j arrays.
     *-----------------------------------------------------------------------*/
 
-   last_col_diag_C = first_row_index_A + num_rows_diag_A - 1;
-   C_diag_j    = hypre_CTAlloc(HYPRE_Int,  C_diag_size, HYPRE_MEMORY_HOST);
-   if (C_offd_size)
-   {
-      C_offd_j    = hypre_CTAlloc(HYPRE_Int,  C_offd_size, HYPRE_MEMORY_HOST);
-   }
-
+   last_col_diag_C = first_row_index_A + (HYPRE_BigInt) (num_rows_diag_A - 1);
+   C_diag_j = hypre_CTAlloc(HYPRE_Int, C_diag_size, HYPRE_MEMORY_HOST);
+   C_offd_j = hypre_CTAlloc(HYPRE_Int, C_offd_size, HYPRE_MEMORY_HOST);
 
    /*-----------------------------------------------------------------------
     *  Second Pass: Fill in C_diag_j.
