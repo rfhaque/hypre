@@ -98,7 +98,6 @@ hypre_SStructGraphGetUVEntryRank( hypre_SStructGraph    *graph,
  * can be used to localize a search for Uventries of a box.
  *      endpt= 0   start of boxes
  *      endpt= 1   end of boxes
-
  * 9/09 AB - modified to use the box manager
  *--------------------------------------------------------------------------*/
 
@@ -124,22 +123,19 @@ hypre_SStructGraphFindBoxEndpt(hypre_SStructGraph    *graph,
    hypre_BoxManGetEntry(boxman, proc, boxi, &boxman_entry);
 
    sgrid = hypre_SStructPGridSGrid(hypre_SStructGridPGrid(grid, part), var);
-   box  = hypre_StructGridBox(sgrid, boxi);
+   box   = hypre_StructGridBox(sgrid, boxi);
 
    /* get the global rank of the endpt corner of box boxi */
    if (endpt < 1)
    {
-      hypre_SStructBoxManEntryGetGlobalRank(
-         boxman_entry, hypre_BoxIMin(box), &rank, type);
+      hypre_SStructBoxManEntryGetGlobalRank(boxman_entry, hypre_BoxIMin(box), &rank, type);
    }
-
    else
    {
-      hypre_SStructBoxManEntryGetGlobalRank(
-         boxman_entry, hypre_BoxIMax(box), &rank, type);
+      hypre_SStructBoxManEntryGetGlobalRank(boxman_entry, hypre_BoxIMax(box), &rank, type);
    }
 
-   if (type == HYPRE_SSTRUCT || type ==  HYPRE_STRUCT)
+   if (type == HYPRE_SSTRUCT || type == HYPRE_STRUCT)
    {
       rank -= hypre_SStructGridGhstartRank(grid);
    }
@@ -148,7 +144,7 @@ hypre_SStructGraphFindBoxEndpt(hypre_SStructGraph    *graph,
       rank -= hypre_SStructGridStartRank(grid);
    }
 
-   return rank;
+   return (HYPRE_Int) rank;
 }
 
 /*--------------------------------------------------------------------------
@@ -182,4 +178,3 @@ hypre_SStructGraphFindSGridEndpts(hypre_SStructGraph    *graph,
 
    return hypre_error_flag;
 }
-
