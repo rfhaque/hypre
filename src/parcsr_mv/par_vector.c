@@ -723,7 +723,7 @@ hypre_ParVectorToVectorAll_v2( hypre_ParVector *par_v,
 
    HYPRE_Int                    num_contacts;
    HYPRE_Int                    contact_proc_list[1];
-   HYPRE_Int                    contact_send_buf[1];
+   HYPRE_BigInt                 contact_send_buf[1];
    HYPRE_Int                    contact_send_buf_starts[2];
    HYPRE_Int                    max_response_size;
    HYPRE_Int                   *response_recv_buf = NULL;
@@ -822,7 +822,7 @@ hypre_ParVectorToVectorAll_v2( hypre_ParVector *par_v,
          }
          for (i = num_types + 1; i < count; i++)
          {
-            new_vec_starts[i - num_types - 1] = send_info[i] ;
+            new_vec_starts[i - num_types - 1] = send_info[i];
          }
       }
       else /* clean up and exit */
@@ -846,7 +846,7 @@ hypre_ParVectorToVectorAll_v2( hypre_ParVector *par_v,
       for (i = 0; i < num_types; i++)
       {
          used_procs[i] = send_proc_obj.id[i];
-         new_vec_starts[i + 1] = send_proc_obj.elements[i] + 1;
+         new_vec_starts[i + 1] = (HYPRE_Int) send_proc_obj.elements[i] + 1;
       }
       hypre_qsort0(used_procs, 0, num_types - 1);
       hypre_qsort0(new_vec_starts, 0, num_types);
@@ -961,7 +961,7 @@ hypre_ParVectorPrintIJ( hypre_ParVector *vector,
    HYPRE_BigInt      global_size, j;
    HYPRE_BigInt     *partitioning;
    HYPRE_Complex    *local_data;
-   HYPRE_Int         myid, num_procs, i, part0;
+   HYPRE_Int         myid, num_procs, i;
    char              new_filename[255];
    FILE             *file;
    if (!vector)
@@ -997,10 +997,10 @@ hypre_ParVectorPrintIJ( hypre_ParVector *vector,
    }
    hypre_fprintf(file, "\n");
 
-   part0 = partitioning[0];
-   for (j = part0; j < partitioning[1]; j++)
+   for (j = 0; j < (HYPRE_Int) (partitioning[1] - partitioning[0]); j++)
    {
-      hypre_fprintf(file, "%b %.14e\n", j + base_j, local_data[(HYPRE_Int)(j - part0)]);
+      hypre_fprintf(file, "%b %.14e\n", (HYPRE_BigInt) (j + base_j) + partitioning[0],
+                    local_data[j]);
    }
 
    fclose(file);
