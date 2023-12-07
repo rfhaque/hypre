@@ -1243,7 +1243,6 @@ void hypre_ParCSRMatrixExtractBExt_Arrays_Overlap(
    HYPRE_Int find_row_map,
    MPI_Comm comm,
    hypre_ParCSRCommPkg * comm_pkg,
-   HYPRE_Int num_cols_B,
    HYPRE_Int num_recvs,
    HYPRE_Int num_sends,
    HYPRE_BigInt first_col_diag,
@@ -1267,8 +1266,6 @@ void hypre_ParCSRMatrixExtractBExt_Arrays_Overlap(
    // other interpolation: skip_fine = 0, skip_same_sign = 0
 )
 {
-   HYPRE_UNUSED_VAR(num_cols_B);
-
    hypre_ParCSRCommHandle *comm_handle, *row_map_comm_handle = NULL;
    hypre_ParCSRCommPkg *tmp_comm_pkg = NULL;
    HYPRE_Int *B_int_i;
@@ -1670,7 +1667,6 @@ void hypre_ParCSRMatrixExtractBExt_Arrays(
    HYPRE_Int find_row_map,
    MPI_Comm comm,
    hypre_ParCSRCommPkg * comm_pkg,
-   HYPRE_Int num_cols_B,
    HYPRE_Int num_recvs,
    HYPRE_Int num_sends,
    HYPRE_BigInt first_col_diag,
@@ -1691,7 +1687,7 @@ void hypre_ParCSRMatrixExtractBExt_Arrays(
 
    hypre_ParCSRMatrixExtractBExt_Arrays_Overlap(
       pB_ext_i, pB_ext_j, pB_ext_data, pB_ext_row_map, num_nonzeros,
-      data, find_row_map, comm, comm_pkg, num_cols_B, num_recvs, num_sends,
+      data, find_row_map, comm, comm_pkg, num_recvs, num_sends,
       first_col_diag, row_starts, recv_vec_starts, send_map_starts, send_map_elmts,
       diag_i, diag_j, offd_i, offd_j, col_map_offd, diag_data, offd_data,
       &comm_handle_idx, &comm_handle_data,
@@ -1783,7 +1779,7 @@ hypre_ParCSRMatrixExtractBExt_Overlap( hypre_ParCSRMatrix *B,
    ( &B_ext_i, &B_ext_j, &B_ext_data, &idummy,
      &num_nonzeros,
      data, 0, comm, comm_pkg,
-     num_cols_B, num_recvs, num_sends,
+     num_recvs, num_sends,
      first_col_diag, B->row_starts,
      recv_vec_starts, send_map_starts, send_map_elmts,
      diag_i, diag_j, offd_i, offd_j, col_map_offd,
