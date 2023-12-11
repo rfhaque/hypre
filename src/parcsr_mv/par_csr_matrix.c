@@ -270,7 +270,7 @@ hypre_ParCSRMatrixClone_v2(hypre_ParCSRMatrix   *A,
                                  hypre_CSRMatrixNumNonzeros(hypre_ParCSRMatrixOffd(A)) );
 
    hypre_ParCSRMatrixNumNonzeros(S)  = hypre_ParCSRMatrixNumNonzeros(A);
-   hypre_ParCSRMatrixDNumNonzeros(S) = hypre_ParCSRMatrixNumNonzeros(A);
+   hypre_ParCSRMatrixDNumNonzeros(S) = (HYPRE_Real) hypre_ParCSRMatrixNumNonzeros(A);
 
    hypre_ParCSRMatrixInitialize_v2(S, memory_location);
 
