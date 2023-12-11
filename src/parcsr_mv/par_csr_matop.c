@@ -2512,23 +2512,26 @@ hypre_ParCSRMatrixGenSpanningTree( hypre_ParCSRMatrix *G_csr,
 
 /* -----------------------------------------------------------------------------
  * extract submatrices based on given indices
+ *
+ * TODO (VPM): Deprecate this function?
  * ----------------------------------------------------------------------------- */
 
 void hypre_ParCSRMatrixExtractSubmatrices( hypre_ParCSRMatrix *A_csr,
                                            HYPRE_Int *indices2,
                                            hypre_ParCSRMatrix ***submatrices )
 {
-   HYPRE_Int    nrows_A, nindices, *indices, *A_diag_i, *A_diag_j, mypid, nprocs;
-   HYPRE_Int    i, j, k, *proc_offsets1, *proc_offsets2, *exp_indices;
-   HYPRE_BigInt *itmp_array;
-   HYPRE_Int    nnz11, nnz12, nnz21, nnz22, col, ncols_offd, nnz_offd, nnz_diag;
-   HYPRE_Int    nrows, nnz;
-   HYPRE_BigInt global_nrows, global_ncols, *row_starts, *col_starts;
-   HYPRE_Int    *diag_i, *diag_j, row, *offd_i;
-   HYPRE_Complex *A_diag_a, *diag_a;
+   HYPRE_Int           nrows_A, nindices, *indices, *A_diag_i, *A_diag_j, mypid, nprocs;
+   HYPRE_Int           i, j, k, *exp_indices;
+   HYPRE_BigInt       *proc_offsets1, *proc_offsets2;
+   HYPRE_BigInt       *itmp_array;
+   HYPRE_Int           nnz11, nnz12, nnz21, nnz22, col, ncols_offd, nnz_offd, nnz_diag;
+   HYPRE_Int           nrows, nnz;
+   HYPRE_BigInt        global_nrows, global_ncols, *row_starts, *col_starts;
+   HYPRE_Int          *diag_i, *diag_j, row, *offd_i;
+   HYPRE_Complex      *A_diag_a, *diag_a;
    hypre_ParCSRMatrix *A11_csr, *A12_csr, *A21_csr, *A22_csr;
    hypre_CSRMatrix    *A_diag, *diag, *offd;
-   MPI_Comm           comm;
+   MPI_Comm            comm;
 
    /* -----------------------------------------------------
     * first make sure the incoming indices are in order
@@ -2560,8 +2563,8 @@ void hypre_ParCSRMatrixExtractSubmatrices( hypre_ParCSRMatrix *A_csr,
     * compute new matrix dimensions
     * ----------------------------------------------------- */
 
-   proc_offsets1 = hypre_TAlloc(HYPRE_Int, (nprocs + 1), HYPRE_MEMORY_HOST);
-   proc_offsets2 = hypre_TAlloc(HYPRE_Int, (nprocs + 1), HYPRE_MEMORY_HOST);
+   proc_offsets1 = hypre_TAlloc(HYPRE_BigInt, (nprocs + 1), HYPRE_MEMORY_HOST);
+   proc_offsets2 = hypre_TAlloc(HYPRE_BigInt, (nprocs + 1), HYPRE_MEMORY_HOST);
    hypre_MPI_Allgather(&nindices, 1, HYPRE_MPI_INT, proc_offsets1, 1,
                        HYPRE_MPI_INT, comm);
    k = 0;
@@ -2688,14 +2691,14 @@ void hypre_ParCSRMatrixExtractSubmatrices( hypre_ParCSRMatrix *A_csr,
    ncols_offd = 0;
    nnz_offd   = 0;
    nnz_diag   = nnz12;
-   global_nrows = (HYPRE_BigInt)proc_offsets1[nprocs];
-   global_ncols = (HYPRE_BigInt)proc_offsets2[nprocs];
+   global_nrows = proc_offsets1[nprocs];
+   global_ncols = proc_offsets2[nprocs];
    row_starts = hypre_CTAlloc(HYPRE_BigInt,  nprocs + 1, HYPRE_MEMORY_HOST);
    col_starts = hypre_CTAlloc(HYPRE_BigInt,  nprocs + 1, HYPRE_MEMORY_HOST);
    for (i = 0; i <= nprocs; i++)
    {
-      row_starts[i] = (HYPRE_BigInt)proc_offsets1[i];
-      col_starts[i] = (HYPRE_BigInt)proc_offsets2[i];
+      row_starts[i] = proc_offsets1[i];
+      col_starts[i] = proc_offsets2[i];
    }
    A12_csr = hypre_ParCSRMatrixCreate(comm, global_nrows, global_ncols,
                                       row_starts, col_starts, ncols_offd,
@@ -2752,14 +2755,14 @@ void hypre_ParCSRMatrixExtractSubmatrices( hypre_ParCSRMatrix *A_csr,
    ncols_offd = 0;
    nnz_offd   = 0;
    nnz_diag   = nnz21;
-   global_nrows = (HYPRE_BigInt)proc_offsets2[nprocs];
-   global_ncols = (HYPRE_BigInt)proc_offsets1[nprocs];
+   global_nrows = proc_offsets2[nprocs];
+   global_ncols = proc_offsets1[nprocs];
    row_starts = hypre_CTAlloc(HYPRE_BigInt,  nprocs + 1, HYPRE_MEMORY_HOST);
    col_starts = hypre_CTAlloc(HYPRE_BigInt,  nprocs + 1, HYPRE_MEMORY_HOST);
    for (i = 0; i <= nprocs; i++)
    {
-      row_starts[i] = (HYPRE_BigInt)proc_offsets2[i];
-      col_starts[i] = (HYPRE_BigInt)proc_offsets1[i];
+      row_starts[i] = proc_offsets2[i];
+      col_starts[i] = proc_offsets1[i];
    }
    A21_csr = hypre_ParCSRMatrixCreate(comm, global_nrows, global_ncols,
                                       row_starts, col_starts, ncols_offd,
@@ -2809,14 +2812,14 @@ void hypre_ParCSRMatrixExtractSubmatrices( hypre_ParCSRMatrix *A_csr,
    ncols_offd = 0;
    nnz_offd   = 0;
    nnz_diag   = nnz22;
-   global_nrows = (HYPRE_BigInt)proc_offsets2[nprocs];
-   global_ncols = (HYPRE_BigInt)proc_offsets2[nprocs];
+   global_nrows = proc_offsets2[nprocs];
+   global_ncols = proc_offsets2[nprocs];
    row_starts = hypre_CTAlloc(HYPRE_BigInt,  nprocs + 1, HYPRE_MEMORY_HOST);
    col_starts = hypre_CTAlloc(HYPRE_BigInt,  nprocs + 1, HYPRE_MEMORY_HOST);
    for (i = 0; i <= nprocs; i++)
    {
-      row_starts[i] = (HYPRE_BigInt)proc_offsets2[i];
-      col_starts[i] = (HYPRE_BigInt)proc_offsets2[i];
+      row_starts[i] = proc_offsets2[i];
+      col_starts[i] = proc_offsets2[i];
    }
    A22_csr = hypre_ParCSRMatrixCreate(comm, global_nrows, global_ncols,
                                       row_starts, col_starts, ncols_offd,
