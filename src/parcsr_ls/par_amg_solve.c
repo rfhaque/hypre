@@ -368,8 +368,8 @@ hypre_BoomerAMGSolve( void               *amg_vdata,
             num_coeffs[j]    = (HYPRE_Real) hypre_ParCSRBlockMatrixNumNonzeros(A_block_array[j]);
             num_variables[j] = (HYPRE_Real) hypre_ParCSRBlockMatrixGlobalNumRows(A_block_array[j]);
          }
-         num_coeffs[0]    = hypre_ParCSRBlockMatrixDNumNonzeros(A_block_array[0]);
-         num_variables[0] = hypre_ParCSRBlockMatrixGlobalNumRows(A_block_array[0]);
+         num_coeffs[0]    = (HYPRE_Real) hypre_ParCSRBlockMatrixDNumNonzeros(A_block_array[0]);
+         num_variables[0] = (HYPRE_Real) hypre_ParCSRBlockMatrixGlobalNumRows(A_block_array[0]);
 
       }
       else
