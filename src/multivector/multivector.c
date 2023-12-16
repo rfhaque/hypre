@@ -185,7 +185,7 @@ mv_MultiVectorByMatrix( mv_MultiVectorPtr x,
 
 void
 mv_MultiVectorXapy( mv_MultiVectorPtr x,
-                    HYPRE_Int rGHeight, HYPRE_Int rHeight,
+                    HYPRE_BigInt rGHeight, HYPRE_Int rHeight,
                     HYPRE_Int rWidth, HYPRE_Complex* rVal,
                     mv_MultiVectorPtr y )
 {

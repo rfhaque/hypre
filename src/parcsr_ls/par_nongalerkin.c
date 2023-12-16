@@ -1253,12 +1253,12 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
    hypre_ParCSRMatrix  *S                    = NULL;
    hypre_ParCSRMatrix  *RAP                  = *RAP_ptr;
    HYPRE_Int           i, j, k, row_start, row_end, num_cols_offd_Sext, num_procs;
-   HYPRE_Int           S_ext_diag_size, S_ext_offd_size, last_col_diag_RAP;
+   HYPRE_Int           S_ext_diag_size, S_ext_offd_size;
+   HYPRE_BigInt        last_col_diag_RAP;
    HYPRE_Int           cnt_offd, cnt_diag, cnt;
    HYPRE_Int           col_indx_Pattern, current_Pattern_j, col_indx_RAP;
    HYPRE_BigInt        value;
    HYPRE_BigInt       *temp                = NULL;
-   char                filename[256];
 
    HYPRE_MemoryLocation memory_location_RAP = hypre_ParCSRMatrixMemoryLocation(RAP);
 
@@ -1303,9 +1303,7 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
    HYPRE_Int           *RAP_offd_j           = hypre_CSRMatrixJ(RAP_offd);
    HYPRE_BigInt        *col_map_offd_RAP     = hypre_ParCSRMatrixColMapOffd(RAP);
    HYPRE_Int            num_cols_RAP_offd    = hypre_CSRMatrixNumCols(RAP_offd);
-
    HYPRE_Int            num_variables        = hypre_CSRMatrixNumRows(RAP_diag);
-   HYPRE_BigInt         global_num_vars      = hypre_ParCSRMatrixGlobalNumRows(RAP);
 
    /* offd and diag portions of S */
    hypre_CSRMatrix     *S_diag               = NULL;
@@ -1517,7 +1515,7 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
    S_ext_diag_size = 0;
    S_ext_offd_size = 0;
    /* num_rows_Sext = num_cols_RAP_offd; */
-   last_col_diag_RAP = (HYPRE_Int) (first_col_diag_RAP + num_cols_diag_RAP - 1);
+   last_col_diag_RAP = first_col_diag_RAP + ((HYPRE_BigInt) (num_cols_diag_RAP - 1));
 
    /* construct the S_ext_diag and _offd row-pointer arrays by counting elements
     * This looks to create offd and diag blocks related to the local rows belonging
@@ -1527,6 +1525,7 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
    for (i = 0; i < num_cols_RAP_offd; i++)
    {
       for (j = S_ext_i[i]; j < S_ext_i[i + 1]; j++)
+      {
          if (S_ext_j[j] < first_col_diag_RAP || S_ext_j[j] > last_col_diag_RAP)
          {
             S_ext_offd_size++;
@@ -1535,6 +1534,7 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
          {
             S_ext_diag_size++;
          }
+      }
       S_ext_diag_i[i + 1] = S_ext_diag_size;
       S_ext_offd_i[i + 1] = S_ext_offd_size;
    }
@@ -1560,6 +1560,7 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
    for (i = 0; i < num_cols_RAP_offd; i++)
    {
       for (j = S_ext_i[i]; j < S_ext_i[i + 1]; j++)
+      {
          if (S_ext_j[j] < first_col_diag_RAP || S_ext_j[j] > last_col_diag_RAP)
          {
             S_ext_offd_data[cnt_offd] = S_ext_data[j];
@@ -1571,6 +1572,7 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
             S_ext_diag_data[cnt_diag] = S_ext_data[j];
             S_ext_diag_j[cnt_diag++] = (HYPRE_Int)(S_ext_j[j] - first_col_diag_RAP);
          }
+      }
    }
 
    /* This creates col_map_offd_Sext */
@@ -1613,10 +1615,7 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
    /* num_nonzeros_S_ext_diag = cnt_diag;
     num_nonzeros_S_ext_offd = S_ext_offd_size; */
 
-   if (num_cols_offd_Sext)
-   {
-      col_map_offd_Sext = hypre_CTAlloc(HYPRE_BigInt,  num_cols_offd_Sext, HYPRE_MEMORY_HOST);
-   }
+   col_map_offd_Sext = hypre_CTAlloc(HYPRE_BigInt, num_cols_offd_Sext, HYPRE_MEMORY_HOST);
 
    for (i = 0; i < num_cols_offd_Sext; i++)
    {
@@ -1631,10 +1630,11 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
    /* look for S_ext_offd_j[i] in col_map_offd_Sext, and set S_ext_offd_j[i]
     * to the index of that column value in col_map_offd_Sext */
    for (i = 0 ; i < S_ext_offd_size; i++)
+   {
       S_ext_offd_j[i] = hypre_BigBinarySearch(col_map_offd_Sext,
                                               S_ext_j[i],
                                               num_cols_offd_Sext);
-
+   }
 
    if (num_procs > 1)
    {
@@ -1645,7 +1645,6 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
    /* Need to sort column indices in S and S_ext */
    for (i = 0; i < num_variables; i++)
    {
-
       /* Re-Sort diag portion of Pattern, placing the diagonal entry in a
        * sorted position */
       row_start = Pattern_diag_i[i];
@@ -1663,7 +1662,6 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
       row_start = S_offd_i[i];
       row_end = S_offd_i[i + 1];
       hypre_qsort1(S_offd_j, S_offd_data, row_start, row_end - 1 );
-
    }
 
    /* Sort S_ext
@@ -2308,6 +2306,8 @@ hypre_BoomerAMGBuildNonGalerkinCoarseOperator( hypre_ParCSRMatrix **RAP_ptr,
 
    /* Optional diagnostic matrix printing */
 #if 0
+   char  filename[256];
+
    hypre_sprintf(filename, "Pattern_%d.ij", global_num_vars);
    hypre_ParCSRMatrixPrintIJ(Pattern, 0, 0, filename);
    hypre_sprintf(filename, "Strength_%d.ij", global_num_vars);

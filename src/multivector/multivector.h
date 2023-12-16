@@ -85,7 +85,7 @@ mv_MultiVectorByMatrix( mv_MultiVectorPtr x,
 /* computes y = x*v + y, where v is stored in fortran style */
 void
 mv_MultiVectorXapy( mv_MultiVectorPtr x,
-                    HYPRE_Int gh, HYPRE_Int h, HYPRE_Int w, HYPRE_Complex* v,
+                    HYPRE_BigInt gh, HYPRE_Int h, HYPRE_Int w, HYPRE_Complex* v,
                     mv_MultiVectorPtr y );
 
 /* computes y = x*diag(mask) */
