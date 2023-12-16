@@ -67,7 +67,7 @@ hypre_ILUSetup( void               *ilu_vdata,
    HYPRE_Real            nnzS;  /* Total nnz in S */
    HYPRE_Real            nnzS_offd_local;
    HYPRE_Real            nnzS_offd;
-   HYPRE_Int             size_C /* Total size of coarse grid */;
+   HYPRE_BigInt          size_C /* Total size of coarse grid */;
 
    hypre_ParVector      *Utemp               = NULL;
    hypre_ParVector      *Ftemp               = NULL;
