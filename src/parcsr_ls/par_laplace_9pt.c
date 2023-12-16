@@ -50,7 +50,7 @@ GenerateLaplacian9pt( MPI_Comm comm,
    HYPRE_BigInt *ny_part;
 
    HYPRE_Int num_procs;
-   HYPRE_Int P_busy, Q_busy;
+   HYPRE_BigInt P_busy, Q_busy;
 
    hypre_MPI_Comm_size(comm, &num_procs);
 
