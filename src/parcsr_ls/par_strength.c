@@ -2081,11 +2081,7 @@ hypre_BoomerAMGCreate2ndSHost( hypre_ParCSRMatrix  *S,
       }
 
       num_nonzeros = S_ext_i[recv_vec_starts[num_recvs]];
-
-      if (num_nonzeros)
-      {
-         S_ext_j = hypre_TAlloc(HYPRE_BigInt,  num_nonzeros, HYPRE_MEMORY_HOST);
-      }
+      S_ext_j = hypre_TAlloc(HYPRE_BigInt,  num_nonzeros, HYPRE_MEMORY_HOST);
 
       for (i = 0; i < num_recvs; i++)
       {
@@ -2207,7 +2203,9 @@ hypre_BoomerAMGCreate2ndSHost( hypre_ParCSRMatrix  *S,
       hypre_TFree(S_big_offd_j, HYPRE_MEMORY_HOST);
       if (num_cols_offd_C) { hypre_UnorderedBigIntMapDestroy(&col_map_offd_C_inverse); }
 #else /* !HYPRE_CONCURRENT_HOPSCOTCH */
-      HYPRE_Int cnt_offd, cnt_diag, cnt, value;
+      HYPRE_Int     cnt_offd, cnt_diag, cnt;
+      HYPRE_BigInt  big_value;
+
       S_ext_diag_size = 0;
       S_ext_offd_size = 0;
 
@@ -2225,17 +2223,10 @@ hypre_BoomerAMGCreate2ndSHost( hypre_ParCSRMatrix  *S,
             }
          }
       }
-      S_ext_diag_i = hypre_CTAlloc(HYPRE_Int,  num_cols_offd_S + 1, HYPRE_MEMORY_HOST);
-      S_ext_offd_i = hypre_CTAlloc(HYPRE_Int,  num_cols_offd_S + 1, HYPRE_MEMORY_HOST);
-
-      if (S_ext_diag_size)
-      {
-         S_ext_diag_j = hypre_CTAlloc(HYPRE_Int,  S_ext_diag_size, HYPRE_MEMORY_HOST);
-      }
-      if (S_ext_offd_size)
-      {
-         S_ext_offd_j = hypre_CTAlloc(HYPRE_Int,  S_ext_offd_size, HYPRE_MEMORY_HOST);
-      }
+      S_ext_diag_i = hypre_CTAlloc(HYPRE_Int, num_cols_offd_S + 1, HYPRE_MEMORY_HOST);
+      S_ext_offd_i = hypre_CTAlloc(HYPRE_Int, num_cols_offd_S + 1, HYPRE_MEMORY_HOST);
+      S_ext_diag_j = hypre_CTAlloc(HYPRE_Int, S_ext_diag_size, HYPRE_MEMORY_HOST);
+      S_ext_offd_j = hypre_CTAlloc(HYPRE_Int, S_ext_offd_size, HYPRE_MEMORY_HOST);
 
       cnt_offd = 0;
       cnt_diag = 0;
@@ -2266,36 +2257,37 @@ hypre_BoomerAMGCreate2ndSHost( hypre_ParCSRMatrix  *S,
       cnt = 0;
       if (S_ext_offd_size || num_coarse_offd)
       {
-         temp = hypre_CTAlloc(HYPRE_BigInt,  S_ext_offd_size + num_coarse_offd, HYPRE_MEMORY_HOST);
+         temp = hypre_CTAlloc(HYPRE_BigInt, S_ext_offd_size + num_coarse_offd, HYPRE_MEMORY_HOST);
          for (i = 0; i < S_ext_offd_size; i++)
          {
             temp[i] = S_ext_j[i];
          }
          cnt = S_ext_offd_size;
          for (i = 0; i < num_cols_offd_S; i++)
-            if (CF_marker_offd[i] > 0) { temp[cnt++] = fine_to_coarse_offd[i]; }
+         {
+            if (CF_marker_offd[i] > 0)
+            {
+               temp[cnt++] = fine_to_coarse_offd[i];
+            }
+         }
       }
       if (cnt)
       {
          hypre_BigQsort0(temp, 0, cnt - 1);
 
          num_cols_offd_C = 1;
-         value = temp[0];
+         big_value = temp[0];
          for (i = 1; i < cnt; i++)
          {
-            if (temp[i] > value)
+            if (temp[i] > big_value)
             {
-               value = temp[i];
-               temp[num_cols_offd_C++] = value;
+               big_value = temp[i];
+               temp[num_cols_offd_C++] = big_value;
             }
          }
       }
 
-      if (num_cols_offd_C)
-      {
-         col_map_offd_C = hypre_CTAlloc(HYPRE_BigInt, num_cols_offd_C, HYPRE_MEMORY_HOST);
-      }
-
+      col_map_offd_C = hypre_CTAlloc(HYPRE_BigInt, num_cols_offd_C, HYPRE_MEMORY_HOST);
       for (i = 0; i < num_cols_offd_C; i++)
       {
          col_map_offd_C[i] = temp[i];
@@ -2307,9 +2299,11 @@ hypre_BoomerAMGCreate2ndSHost( hypre_ParCSRMatrix  *S,
       }
 
       for (i = 0 ; i < S_ext_offd_size; i++)
+      {
          S_ext_offd_j[i] = hypre_BigBinarySearch(col_map_offd_C,
                                                  S_ext_j[i],
                                                  num_cols_offd_C);
+      }
       hypre_TFree(S_ext_j, HYPRE_MEMORY_HOST);
 
 #endif /* !HYPRE_CONCURRENT_HOPSCOTCH */
@@ -2334,7 +2328,7 @@ hypre_BoomerAMGCreate2ndSHost( hypre_ParCSRMatrix  *S,
                                                             col_map_offd_C + num_cols_offd_C,
                                                             fine_to_coarse_offd[i]) -
                                         col_map_offd_C);
-                  map_S_to_C[i] = cnt++;
+                  map_S_to_C[i] = (HYPRE_Int) cnt++;
                }
                else
                {
