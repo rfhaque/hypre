@@ -936,7 +936,7 @@ hypre_BoomerAMGSetupStats( void               *amg_vdata,
          }
       }
 
-      numrows = row_starts[1] - row_starts[0];
+      numrows = (HYPRE_Int) (row_starts[1] - row_starts[0]);
       if (!numrows) /* if we don't have any rows, then don't have this count toward
                        min row sum or min num entries */
       {
