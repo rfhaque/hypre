@@ -971,11 +971,11 @@ hypre_AmgCGCGraphAssemble(hypre_ParCSRMatrix *S,
       HYPRE_Int *int_buf_data   = hypre_CTAlloc(HYPRE_Int, 4 * num_sends, HYPRE_MEMORY_HOST);
       HYPRE_Int *int_buf_data2  = int_buf_data + 2 * num_sends;
       hypre_MPI_Request *sendrequest, *recvrequest;
-      HYPRE_Int pointrange_start, pointrange_end;
+      HYPRE_BigInt pointrange_start, pointrange_end;
 
       nlocal = vertexrange[1] - vertexrange[0];
-      pointrange_start = pointrange[0];
-      pointrange_end   = pointrange[1];
+      pointrange_start  = pointrange[0];
+      pointrange_end    = pointrange[1];
       vertexrange_start = vertexrange[0];
       vertexrange_end   = vertexrange[1];
       sendrequest = hypre_CTAlloc(hypre_MPI_Request, 2 * (num_sends + num_recvs), HYPRE_MEMORY_HOST);

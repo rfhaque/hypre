@@ -2570,7 +2570,7 @@ void hypre_ParCSRMatrixExtractSubmatrices( hypre_ParCSRMatrix *A_csr,
    k = 0;
    for (i = 0; i < nprocs; i++)
    {
-      j = proc_offsets1[i];
+      j = (HYPRE_Int) proc_offsets1[i];
       proc_offsets1[i] = k;
       k += j;
    }

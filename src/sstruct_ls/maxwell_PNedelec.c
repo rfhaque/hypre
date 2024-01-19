@@ -64,8 +64,8 @@ hypre_Maxwell_PNedelec( hypre_SStructGrid    *fgrid_edge,
    HYPRE_Int              nvars, Edge_nvars, part, var;
    HYPRE_Int              tot_vars = 8;
 
-   HYPRE_Int              t, i, j, k, m, n, size;
-   HYPRE_BigInt           l, p;
+   HYPRE_Int              t, i, j, k, m, n, p, size;
+   HYPRE_BigInt           l;
 
    HYPRE_BigInt           ilower, iupper;
    HYPRE_BigInt           jlower, jupper;
