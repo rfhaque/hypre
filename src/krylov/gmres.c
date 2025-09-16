@@ -356,6 +356,13 @@ hypre_GMRESSolve(void  *gmres_vdata,
       hh[i] = hypre_CTAllocF(HYPRE_Real, k_dim, gmres_functions, HYPRE_MEMORY_HOST);
    }
 
+   time_index = hypre_InitializeTiming("GMRES Solve"); 
+   hypre_BeginTiming(time_index);
+
+   HYPRE_ANNOTATE_REGION_BEGIN("FOMStep");
+
+   hypre_MPI_Barrier(comm);
+
    (*(gmres_functions->CopyVector))(b, p[0]);
 
    /* compute initial residual */
@@ -903,6 +910,11 @@ hypre_GMRESSolve(void  *gmres_vdata,
       hypre_error(HYPRE_ERROR_CONV);
    }
 
+   hypre_MPI_Barrier(comm);
+
+   HYPRE_ANNOTATE_REGION_END("FOMStep");
+
+   hypre_EndTiming(time_index);
    hypre_TFreeF(c, gmres_functions);
    hypre_TFreeF(s, gmres_functions);
    hypre_TFreeF(rs, gmres_functions);
