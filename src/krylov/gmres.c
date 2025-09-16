@@ -356,7 +356,7 @@ hypre_GMRESSolve(void  *gmres_vdata,
       hh[i] = hypre_CTAllocF(HYPRE_Real, k_dim, gmres_functions, HYPRE_MEMORY_HOST);
    }
 
-   time_index = hypre_InitializeTiming("GMRES Solve"); 
+   HYPRE_Int time_index = hypre_InitializeTiming("GMRES Solve"); 
    hypre_BeginTiming(time_index);
 
    HYPRE_ANNOTATE_REGION_BEGIN("FOMStep");
