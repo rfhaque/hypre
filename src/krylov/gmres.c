@@ -915,6 +915,7 @@ hypre_GMRESSolve(void  *gmres_vdata,
    HYPRE_ANNOTATE_REGION_END("FOMStep");
 
    hypre_EndTiming(time_index);
+
    hypre_TFreeF(c, gmres_functions);
    hypre_TFreeF(s, gmres_functions);
    hypre_TFreeF(rs, gmres_functions);
@@ -933,7 +934,7 @@ hypre_GMRESSolve(void  *gmres_vdata,
 
    HYPRE_ANNOTATE_FUNC_END;
 
-   return hypre_error_flag;
+   return time_index;
 }
 
 /*--------------------------------------------------------------------------
