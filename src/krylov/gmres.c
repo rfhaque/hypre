@@ -361,7 +361,7 @@ hypre_GMRESSolve(void  *gmres_vdata,
 
    HYPRE_ANNOTATE_REGION_BEGIN("FOMStep");
 
-   hypre_MPI_Barrier(comm);
+   hypre_MPI_Barrier(hypre_MPI_COMM_WORLD);
 
    (*(gmres_functions->CopyVector))(b, p[0]);
 
@@ -910,7 +910,7 @@ hypre_GMRESSolve(void  *gmres_vdata,
       hypre_error(HYPRE_ERROR_CONV);
    }
 
-   hypre_MPI_Barrier(comm);
+   hypre_MPI_Barrier(hypre_MPI_COMM_WORLD);
 
    HYPRE_ANNOTATE_REGION_END("FOMStep");
 
