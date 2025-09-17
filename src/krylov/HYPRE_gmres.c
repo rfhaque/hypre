@@ -45,9 +45,10 @@ HYPRE_Int
 HYPRE_GMRESSolve( HYPRE_Solver solver,
                   HYPRE_Matrix A,
                   HYPRE_Vector b,
-                  HYPRE_Vector x      )
+                  HYPRE_Vector x,
+                  HYPRE_Real* solve_wall_time      )
 {
-   return ( hypre_GMRESSolve( solver, A, b, x ) );
+   return ( hypre_GMRESSolve( solver, A, b, x, solve_wall_time ) );
 }
 
 /*--------------------------------------------------------------------------

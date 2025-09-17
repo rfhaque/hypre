@@ -274,7 +274,8 @@ HYPRE_Int
 hypre_GMRESSolve(void  *gmres_vdata,
                  void  *A,
                  void  *b,
-                 void  *x)
+                 void  *x,
+                 HYPRE_Real* solve_wall_time)
 {
    hypre_GMRESData      *gmres_data         = (hypre_GMRESData *)gmres_vdata;
    hypre_GMRESFunctions *gmres_functions    = (gmres_data -> functions);
@@ -916,6 +917,14 @@ hypre_GMRESSolve(void  *gmres_vdata,
 
    hypre_EndTiming(time_index);
 
+   HYPRE_Real          wall_time;
+   hypre_GetTiming("Problem 1: AMG-GMRES Solve Time", &wall_time, comm);
+   hypre_FinalizeTiming(time_index);
+   hypre_ClearTiming();
+   fflush(NULL);
+
+   *solve_wall_time = wall_time;
+
    hypre_TFreeF(c, gmres_functions);
    hypre_TFreeF(s, gmres_functions);
    hypre_TFreeF(rs, gmres_functions);
@@ -934,7 +943,7 @@ hypre_GMRESSolve(void  *gmres_vdata,
 
    HYPRE_ANNOTATE_FUNC_END;
 
-   return time_index;
+   return hypre_error_flag;
 }
 
 /*--------------------------------------------------------------------------
