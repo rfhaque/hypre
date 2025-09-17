@@ -274,8 +274,7 @@ HYPRE_Int
 hypre_GMRESSolve(void  *gmres_vdata,
                  void  *A,
                  void  *b,
-                 void  *x,
-                 HYPRE_Real* solve_wall_time)
+                 void  *x)
 {
    hypre_GMRESData      *gmres_data         = (hypre_GMRESData *)gmres_vdata;
    hypre_GMRESFunctions *gmres_functions    = (gmres_data -> functions);
@@ -357,12 +356,12 @@ hypre_GMRESSolve(void  *gmres_vdata,
       hh[i] = hypre_CTAllocF(HYPRE_Real, k_dim, gmres_functions, HYPRE_MEMORY_HOST);
    }
 
-   HYPRE_Int time_index = hypre_InitializeTiming("GMRES Solve"); 
-   hypre_MPI_Barrier(hypre_MPI_COMM_WORLD);
+   //HYPRE_Int time_index = hypre_InitializeTiming("GMRES Solve"); 
+   //hypre_MPI_Barrier(hypre_MPI_COMM_WORLD);
 
-   hypre_BeginTiming(time_index);
+   //hypre_BeginTiming(time_index);
 
-   HYPRE_ANNOTATE_REGION_BEGIN("FOMStep");
+   //HYPRE_ANNOTATE_REGION_BEGIN("FOMStep");
 
    (*(gmres_functions->CopyVector))(b, p[0]);
 
@@ -911,20 +910,21 @@ hypre_GMRESSolve(void  *gmres_vdata,
       hypre_error(HYPRE_ERROR_CONV);
    }
 
-   hypre_MPI_Barrier(hypre_MPI_COMM_WORLD);
+   //hypre_MPI_Barrier(hypre_MPI_COMM_WORLD);
 
-   HYPRE_ANNOTATE_REGION_END("FOMStep");
+   //HYPRE_ANNOTATE_REGION_END("FOMStep");
 
-   hypre_EndTiming(time_index);
+   //hypre_EndTiming(time_index);
 
-   HYPRE_Real          wall_time;
-   hypre_GetTiming("Problem 1: AMG-GMRES Solve Time", &wall_time, comm);
-   hypre_FinalizeTiming(time_index);
-   hypre_ClearTiming();
-   fflush(NULL);
+   //HYPRE_Real          wall_time;
+   //hypre_GetTiming("Problem 1: AMG-GMRES Solve Time", &wall_time, comm);
+   //hypre_FinalizeTiming(time_index);
+   //hypre_ClearTiming();
+   //fflush(NULL);
 
-   *solve_wall_time = wall_time;
+   //*solve_wall_time = wall_time;
 
+/*
    hypre_TFreeF(c, gmres_functions);
    hypre_TFreeF(s, gmres_functions);
    hypre_TFreeF(rs, gmres_functions);
@@ -940,7 +940,7 @@ hypre_GMRESSolve(void  *gmres_vdata,
    }
 
    hypre_TFreeF(hh, gmres_functions);
-
+*/
    HYPRE_ANNOTATE_FUNC_END;
 
    return hypre_error_flag;
