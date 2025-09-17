@@ -357,11 +357,11 @@ hypre_GMRESSolve(void  *gmres_vdata,
    }
 
    HYPRE_Int time_index = hypre_InitializeTiming("GMRES Solve"); 
+   hypre_MPI_Barrier(hypre_MPI_COMM_WORLD);
+
    hypre_BeginTiming(time_index);
 
    HYPRE_ANNOTATE_REGION_BEGIN("FOMStep");
-
-   hypre_MPI_Barrier(hypre_MPI_COMM_WORLD);
 
    (*(gmres_functions->CopyVector))(b, p[0]);
 
