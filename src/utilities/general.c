@@ -332,7 +332,7 @@ HYPRE_DeviceInitialize(void)
    /* A separate stream for prefetching */
    //hypre_HandleCudaPrefetchStream(handle);
 
-#if defined(HYPRE_USING_CUBLAS)
+#if defined(HYPRE_USING_CUBLAS) || defined(HYPRE_USING_ROCBLAS)
    hypre_HandleCublasHandle(handle);
 #endif
 
